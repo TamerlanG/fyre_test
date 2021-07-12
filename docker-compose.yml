@@ -1,0 +1,30 @@
+version: "3.4"
+
+services:
+  clear:
+    image: clear
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 5000:8080
+    networks:
+      - network
+    depends_on:
+      - mongo_database
+  mongo_database:
+    image: mongo
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo-js:ro
+      - ./mongo-volume:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=fyre
+    networks:
+      - network
+    ports:
+      - "27017-27019:27017-27019"
+networks:
+  network:
+    driver: bridge
